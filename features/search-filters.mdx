@@ -1,5 +1,5 @@
 ---
-title: "Searching and Filtering Books in Book Paradise"
+title: "Book Paradise Search, Category Filters, and Sort Options"
 sidebarTitle: "Search & Filters"
 description: "Book Paradise provides real-time search by title or author, category filter buttons, and multi-criterion sorting to help you find the right book instantly."
 ---
@@ -15,7 +15,7 @@ The **search input** at the top of the Products section filters the visible book
     Click inside the search input field above the book grid. It is labeled with a magnifying-glass icon placeholder.
   </Step>
   <Step title="Start typing">
-    Begin typing any part of a book title or an author's name. The catalog grid re-renders after every keystroke, showing only the books whose title or author contains your query.
+    Begin typing any part of a book title or an author's name. Each keystroke calls `searchBooks(query)`, which re-renders the grid showing only books whose title or author contains your query.
   </Step>
   <Step title="Clear the search">
     Delete all text from the input field (or click the × clear button if present) to return to the full unfiltered catalog, respecting any category filter or sort order you have active.
@@ -35,9 +35,10 @@ A horizontal row of pill-shaped filter buttons sits beneath the search bar. Each
   <Card title="Sci-Fi" icon="rocket">Shows science fiction and speculative fiction.</Card>
   <Card title="Biography" icon="user">Shows memoirs and biographical accounts.</Card>
   <Card title="Self-Help" icon="brain">Shows personal development and productivity books.</Card>
+  <Card title="Classic" icon="landmark">Shows timeless works from the literary canon.</Card>
 </CardGroup>
 
-Clicking a category button activates it (the button gains an active/highlighted style) and immediately re-renders the grid to show only books with a matching `category` value. Clicking the active button again, or clicking **All**, deactivates the filter.
+Clicking a category button activates it (the button gains an active/highlighted style) and immediately calls `filterByCategory(category)`, which re-renders the grid to show only books with a matching `category` value. Clicking the active button again, or clicking **All**, calls `filterByCategory('all')` to deactivate the filter.
 
 <Tip>
   The **All** filter button is selected by default when the page loads and always shows the complete catalog of all 24 books. It is the fastest way to reset a category filter without refreshing the page.
@@ -55,7 +56,7 @@ The **sort dropdown** to the right of the filter buttons lets you reorder the cu
 | Title: A–Z         | Ascending alphabetical sort by `title`.                         |
 | Title: Z–A         | Descending alphabetical sort by `title`.                        |
 
-Selecting a sort option re-renders the catalog immediately. The sort is applied to the already-filtered result set, so it always respects any active search query or category filter.
+Selecting a sort option calls `sortBooks(criterion)` and re-renders the catalog immediately. The sort is applied to the already-filtered result set, so it always respects any active search query or category filter.
 
 ## Combining Filters
 

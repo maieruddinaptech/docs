@@ -1,7 +1,7 @@
 ---
-title: "Saving Books to Your Book Paradise Wishlist"
+title: "Book Paradise Wishlist: Save and Manage Your Saved Books"
 sidebarTitle: "Wishlist"
-description: "The Book Paradise wishlist lets you save books for later with a single click. Wishlist items persist in localStorage and can be moved to the cart at any time."
+description: "Save any Book Paradise title to your wishlist with a single click. Wishlist items persist in localStorage and can be moved to the cart at any time."
 ---
 
 The Book Paradise wishlist gives you a frictionless way to bookmark titles you are interested in without committing to a purchase right away. Whether you are building a reading list, saving gift ideas, or waiting for the right moment to buy, the wishlist lets you flag any of the 24 catalog titles with a single click. Like the cart, the wishlist is backed entirely by your browser's `localStorage`, so your saved books are always there when you return — no account or login required.
@@ -15,10 +15,10 @@ Every book card in the catalog displays a **heart icon** (♡) in its top-right 
     Browse or filter the Products section until you spot a title you would like to keep for later.
   </Step>
   <Step title="Click the heart icon">
-    Click the heart icon on the book card. The icon transitions from an outlined heart (♡) to a filled, colored heart (♥) to confirm the book has been added to your wishlist. The change is instant and requires no page reload.
+    Click the heart icon on the book card. This calls `toggleWishlist(bookId)`, which adds the book's ID to `bp_wishlist` in `localStorage`. The icon transitions from an outlined heart (♡) to a filled, colored heart (♥) instantly — no page reload required.
   </Step>
   <Step title="Remove from wishlist">
-    Click the same filled heart icon again to toggle the book back out of your wishlist. The icon returns to its outlined state and the book's ID is removed from `localStorage`.
+    Click the same filled heart icon again to call `toggleWishlist(bookId)` a second time. The icon returns to its outlined state and the book's ID is removed from `localStorage`.
   </Step>
 </Steps>
 

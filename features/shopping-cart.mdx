@@ -1,7 +1,7 @@
 ---
-title: "Using the Book Paradise Shopping Cart"
+title: "Book Paradise Shopping Cart: Add, Adjust, and Check Out"
 sidebarTitle: "Shopping Cart"
-description: "The Book Paradise cart sidebar lets you add books, adjust quantities, view a running total, and complete your order — all saved automatically in your browser's localStorage."
+description: "Add books, adjust quantities, and check out in the Book Paradise cart sidebar. Your cart is saved in localStorage and survives page reloads automatically."
 ---
 
 The Book Paradise shopping cart is a fully client-side experience — there is no server, no session token, and no login required. Every item you add is serialized to your browser's `localStorage` under the key `bp_cart`, which means your selections survive page refreshes, accidental tab closes, and even full browser restarts. The cart renders as a slide-in sidebar on the right side of the screen and is accessible from any section of the page via the navbar icon.
@@ -19,7 +19,7 @@ To close the sidebar, click the **×** button at the top of the panel, click the
     Browse or filter the Products section until you find a title you want.
   </Step>
   <Step title="Click Add to Cart">
-    Press the **Add to Cart** button on the book card. If the book is already in your cart, its quantity increments by one instead of creating a duplicate entry.
+    Press the **Add to Cart** button on the book card. This calls `addToCart(bookId)`, which adds the book to the cart or increments its quantity by one if it is already present. `renderCart()` is then called automatically to refresh the sidebar display.
   </Step>
   <Step title="Confirm the toast">
     A SweetAlert2 toast notification slides in at the top of the screen confirming the addition (e.g., *"The Midnight Library added to cart!"*). The cart badge in the navbar updates immediately.
@@ -30,9 +30,9 @@ To close the sidebar, click the **×** button at the top of the panel, click the
 
 Each line item in the cart sidebar displays **−** and **+** buttons on either side of the current quantity.
 
-- Pressing **+** increases the quantity by one and recalculates the subtotal in real time.
-- Pressing **−** decreases the quantity by one. The minimum quantity is **1** — the minus button is disabled when the quantity is already at 1 to prevent accidental zeroing.
-- To remove a book entirely, click the **trash icon** (🗑) to the right of the item. The item is removed from the sidebar and from `localStorage` immediately.
+- Pressing **+** calls `updateQuantity(bookId, 1)`, increasing the quantity by one and recalculating the subtotal in real time.
+- Pressing **−** calls `updateQuantity(bookId, -1)`, decreasing the quantity by one. The minimum quantity is **1** — the minus button is disabled when the quantity is already at 1 to prevent accidental zeroing.
+- To remove a book entirely, click the **trash icon** (🗑) to the right of the item. This calls `removeFromCart(bookId)`, which removes the item from the sidebar and from `localStorage` immediately.
 
 ## Running Total
 
@@ -48,7 +48,7 @@ The formatted total (e.g., **$42.97**) is displayed at the bottom of the item li
 
 ## Checkout
 
-Clicking the **Checkout** button at the bottom of the cart sidebar opens a SweetAlert2 confirmation dialog. The dialog summarizes the total amount and asks you to confirm your order.
+Clicking the **Checkout** button at the bottom of the cart sidebar calls `showCheckoutAlert()`, which opens a SweetAlert2 confirmation dialog. The dialog summarizes the total amount and asks you to confirm your order.
 
 - If you confirm, the cart is cleared from `localStorage`, the sidebar closes, and a success toast appears (e.g., *"Order placed successfully! Thank you for shopping at Book Paradise."*).
 - If you cancel, you are returned to the cart sidebar with all items intact.

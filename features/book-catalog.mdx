@@ -1,7 +1,7 @@
 ---
-title: "Browsing the Book Paradise Catalog of 24 Titles"
+title: "Book Paradise Catalog: Browsing and Viewing 24 Book Titles"
 sidebarTitle: "Book Catalog"
-description: "Book Paradise displays 24 curated books, each with an image, title, author, category, price, star rating, badges, and quick actions including Add to Cart, Wishlist, and Quick View."
+description: "Book Paradise shows 24 curated books, each with a cover, title, author, category, price, star rating, badge, Add to Cart, Wishlist, and Quick View."
 ---
 
 Book Paradise ships with a hand-picked catalog of 24 titles spanning eight genres. Every book is represented by a card that is generated dynamically from the `books` array in `script.js` — no hard-coded HTML cards exist in `index.html`. When the page loads, the `renderBooks()` function iterates over the array and injects a fully-formed card for each entry into the `#book-grid` container. This means you can add, edit, or remove titles simply by modifying the JavaScript array, and the entire catalog will update automatically on the next page load.
@@ -30,16 +30,16 @@ Each card surfaces all the information a reader needs to make a quick purchasing
     Each card carries one of three availability states: **In Stock** (green), **Limited** (amber), or **Pre-Order** (blue), drawn from the book object's `badge` field.
   </Card>
   <Card title="Add to Cart" icon="cart-shopping">
-    The primary action button adds the book to the cart sidebar and triggers a SweetAlert2 toast confirmation. See the [Shopping Cart](/features/shopping-cart) guide for details.
+    The primary action button calls `addToCart(bookId)`, which adds the book to the cart sidebar and triggers a SweetAlert2 toast confirmation. See the [Shopping Cart](/features/shopping-cart) guide for details.
   </Card>
   <Card title="Wishlist Toggle" icon="heart">
-    A heart icon in the card's top-right corner toggles the book in and out of your wishlist. A filled heart indicates the book is currently wishlisted.
+    A heart icon in the card's top-right corner calls `toggleWishlist(bookId)` to add or remove the book from your wishlist. A filled heart indicates the book is currently wishlisted.
   </Card>
 </CardGroup>
 
 ### Quick View Button
 
-A **Quick View** button appears on each card on hover. Clicking it opens a Bootstrap 5 modal that gives you a richer look at the book without leaving the catalog page.
+A **Quick View** button appears on each card on hover. Clicking it calls `openQuickView(bookId)`, which opens a Bootstrap 5 modal that gives you a richer look at the book without leaving the catalog page.
 
 The modal contains:
 
