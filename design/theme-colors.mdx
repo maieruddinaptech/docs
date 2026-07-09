@@ -1,0 +1,53 @@
+---
+title: "Book Paradise Color Palette and Theme Variables"
+sidebarTitle: "Theme Colors"
+description: "Book Paradise uses a luxury dark navy, gold, and white color palette defined as CSS custom properties, making it easy to adjust the entire theme from one place in style.css."
+---
+
+Book Paradise establishes its premium identity through a carefully curated luxury palette — deep navy backgrounds, warm gold accents, and crisp white text — all wired up as CSS custom properties in `style.css`. Because every color across the site references these variables, you can retheme the entire storefront by editing a single `:root` block rather than hunting through hundreds of individual rules.
+
+## Core Palette
+
+The six core variables cover every color role in the design, from the darkest background to the brightest call-to-action:
+
+| Variable | Value | Use |
+|---|---|---|
+| `--color-navy` | `#0a0f2c` | Primary background |
+| `--color-gold` | `#d4af37` | Accents, headings, borders |
+| `--color-white` | `#ffffff` | Body text, card backgrounds |
+| `--color-cream` | `#f5f0e8` | Subtle backgrounds |
+| `--color-accent` | `#ef7025` | CTA buttons, highlights |
+| `--color-teal` | `#4fa1ab` | Links, secondary accents |
+
+## Applying Custom Colors
+
+All six variables live at the top of `style.css` inside the `:root` selector. To change any color across the entire site, update the corresponding line here — no other files need to be touched:
+
+```css style.css
+:root {
+  --color-navy:  #0a0f2c;
+  --color-gold:  #d4af37;   /* change this for a different accent */
+  --color-white: #ffffff;
+  --color-cream: #f5f0e8;
+  --color-accent:#ef7025;
+  --color-teal:  #4fa1ab;
+}
+```
+
+<Tip>
+  Changing `--color-gold` alone transforms the entire accent scheme throughout the site — every heading highlight, card border, scroll progress bar, and decorative separator picks up the new value automatically.
+</Tip>
+
+## Glassmorphism Cards
+
+Several UI surfaces in Book Paradise — including feature cards and the cart sidebar header — use a glassmorphism treatment that layers translucency over the dark navy background. The effect is achieved with three properties working together:
+
+- **Background:** `background: rgba(255, 255, 255, 0.08)` — a barely-visible white tint that suggests a frosted surface without obscuring the backdrop.
+- **Blur:** `backdrop-filter: blur(12px)` — softens whatever is behind the element, reinforcing the glass illusion.
+- **Gold border:** `border: 1px solid rgba(212, 175, 55, 0.2)` — a subtle, semi-transparent gold outline that ties the card visually to the site's accent color.
+
+Together these three declarations give the cards a sense of depth and luxury that flat or solid-color panels cannot achieve on the dark navy canvas.
+
+<Note>
+  The dark navy background (`#0a0f2c`) is intentionally very dark to maximize contrast with gold text and white body copy, meeting WCAG AA contrast ratio requirements. Avoid lightening `--color-navy` significantly without re-checking contrast ratios on all text elements.
+</Note>

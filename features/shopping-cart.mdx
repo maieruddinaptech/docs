@@ -1,0 +1,78 @@
+---
+title: "Using the Book Paradise Shopping Cart"
+sidebarTitle: "Shopping Cart"
+description: "The Book Paradise cart sidebar lets you add books, adjust quantities, view a running total, and complete your order — all saved automatically in your browser's localStorage."
+---
+
+The Book Paradise shopping cart is a fully client-side experience — there is no server, no session token, and no login required. Every item you add is serialized to your browser's `localStorage` under the key `bp_cart`, which means your selections survive page refreshes, accidental tab closes, and even full browser restarts. The cart renders as a slide-in sidebar on the right side of the screen and is accessible from any section of the page via the navbar icon.
+
+## Opening the Cart
+
+Click the **cart icon** (🛒) in the top-right corner of the navbar at any time. The sidebar slides in from the right with a smooth CSS transition. A badge on the icon displays the current item count so you always know how many titles are in your cart without opening it.
+
+To close the sidebar, click the **×** button at the top of the panel, click the dark overlay to the left of the sidebar, or press the `Escape` key.
+
+## Adding Books
+
+<Steps>
+  <Step title="Find a book in the catalog">
+    Browse or filter the Products section until you find a title you want.
+  </Step>
+  <Step title="Click Add to Cart">
+    Press the **Add to Cart** button on the book card. If the book is already in your cart, its quantity increments by one instead of creating a duplicate entry.
+  </Step>
+  <Step title="Confirm the toast">
+    A SweetAlert2 toast notification slides in at the top of the screen confirming the addition (e.g., *"The Midnight Library added to cart!"*). The cart badge in the navbar updates immediately.
+  </Step>
+</Steps>
+
+## Quantity Controls
+
+Each line item in the cart sidebar displays **−** and **+** buttons on either side of the current quantity.
+
+- Pressing **+** increases the quantity by one and recalculates the subtotal in real time.
+- Pressing **−** decreases the quantity by one. The minimum quantity is **1** — the minus button is disabled when the quantity is already at 1 to prevent accidental zeroing.
+- To remove a book entirely, click the **trash icon** (🗑) to the right of the item. The item is removed from the sidebar and from `localStorage` immediately.
+
+## Running Total
+
+The cart sidebar shows a **subtotal** that recalculates in real time whenever a quantity changes or an item is removed. The total is computed by summing `price × quantity` for every item in the cart:
+
+```js script.js
+function getCartTotal(cart) {
+  return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+}
+```
+
+The formatted total (e.g., **$42.97**) is displayed at the bottom of the item list, just above the Checkout button.
+
+## Checkout
+
+Clicking the **Checkout** button at the bottom of the cart sidebar opens a SweetAlert2 confirmation dialog. The dialog summarizes the total amount and asks you to confirm your order.
+
+- If you confirm, the cart is cleared from `localStorage`, the sidebar closes, and a success toast appears (e.g., *"Order placed successfully! Thank you for shopping at Book Paradise."*).
+- If you cancel, you are returned to the cart sidebar with all items intact.
+
+<Warning>
+  Because Book Paradise has no backend, clicking Checkout does **not** process a real payment or send an order confirmation email. The checkout flow is a front-end simulation intended for demonstration purposes only.
+</Warning>
+
+## Persistence
+
+Cart data is automatically saved to `localStorage` every time you add an item, change a quantity, or remove a title. No action is required on your part.
+
+```js Cart data shape in localStorage
+// localStorage key: "bp_cart"
+[
+  { id: 1, title: "The Midnight Library", price: 14.99, quantity: 2 },
+  { id: 5, title: "Atomic Habits",        price: 12.99, quantity: 1 }
+]
+```
+
+<Warning>
+  Cart data is stored only in your current browser on your current device. It is **not** synced across different browsers, different devices, or incognito/private windows. If you clear your browser's site data or localStorage, your cart will be permanently lost.
+</Warning>
+
+<Tip>
+  You can quickly empty your cart at any time by clicking the trash icon next to each item in the sidebar, or by going through the Checkout flow and confirming the order. There is no "Clear All" button, but completing checkout is the fastest way to reset the cart to an empty state.
+</Tip>

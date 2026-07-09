@@ -1,47 +1,75 @@
 ---
-title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+title: "Get Started with Book Paradise in Minutes"
+sidebarTitle: "Quickstart"
+description: "Learn how to download, open, and customize Book Paradise in under five minutes — no install, no build step, no server required."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+You can go from zero to a fully running Book Paradise storefront in under five minutes. There is nothing to install, no terminal commands to memorize, and no accounts to create. Grab the three project files, open them in a browser, and you have a working luxury bookstore ready to customize.
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
-
-## Prerequisites
-
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+## Launch Book Paradise
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+  <Step title="Download the three project files">
+    Clone or download the repository to get the three files that make up Book Paradise:
 
-    ```bash
-    npm install your-package
-    ```
+    - `index.html` — all page markup, CDN link and script tags, and section structure
+    - `style.css` — every custom style rule, CSS variable, and animation
+    - `script.js` — the book data array, cart logic, wishlist logic, and all event listeners
+
+    Place all three files in the same folder on your machine. The files must stay together — `index.html` references the other two by relative path.
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
-
-    ```bash
-    your-cli init
-    ```
+  <Step title="Open index.html in a modern browser">
+    Double-click `index.html` or drag it into the address bar of Chrome, Firefox, Safari, or Edge. The storefront loads immediately. You will see the hero section animate in, and the full product catalog renders from the JavaScript data layer — no network request needed for the book data itself.
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+  <Step title="(Optional) Serve with a local static server">
+    Opening the file directly via `file://` works for almost everything, but a local HTTP server gives you more accurate behavior for features like the `fetch` API or service workers if you add them later. Spin one up with a single command:
 
     ```bash
-    your-cli start
+    # Using Python (built into macOS and most Linux distros)
+    python3 -m http.server 8080
+
+    # Using Node.js / npx (no global install needed)
+    npx serve .
     ```
+
+    Then visit `http://localhost:8080` in your browser.
+  </Step>
+  <Step title="Explore the storefront">
+    Browse the 24-book catalog in the **Products** section. Try the following to see all interactive features in action:
+
+    - Type a title or author name into the search bar
+    - Click a category chip to filter by genre
+    - Use the sort dropdown to order by price, rating, or title
+    - Add books to your cart and open the sliding cart sidebar
+    - Heart-icon books to save them to your wishlist
+    - Navigate to **Contact** and submit the form to see the SweetAlert2 confirmation
+  </Step>
+  <Step title="Customize for your own store">
+    Making Book Paradise your own requires editing just two files:
+
+    - **`script.js`** — find the `books` array near the top of the file. Each object holds `id`, `title`, `author`, `price`, `rating`, `category`, `cover`, and `description` properties. Add, remove, or edit entries to match your real inventory.
+    - **`style.css`** — locate the `:root` block at the top of the file. Change the CSS custom property values (e.g. `--color-primary`, `--color-gold`, `--font-heading`) to retheme the entire site in seconds.
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## What Loads from CDN
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
+Book Paradise has no `node_modules` folder because every third-party library is loaded via a `<link>` or `<script>` tag in `index.html`. The following libraries are fetched from CDN on first page load and then cached by the browser:
+
+| Library | Purpose |
+|---|---|
+| **Bootstrap 5** | Responsive grid, modal, offcanvas, and utility classes |
+| **Bootstrap Icons** | Icon font used for cart, wishlist, and navigation icons |
+| **Font Awesome** | Additional icon set used in the about and features sections |
+| **AOS (Animate On Scroll)** | Scroll-triggered entrance animations on cards and sections |
+| **Animate.css** | CSS animation utility classes for hero and modal transitions |
+| **SweetAlert2** | Stylish popup dialogs for cart confirmation and form feedback |
+| **Google Fonts** | Playfair Display (headings) and Poppins (body text) |
+
+<Tip>
+  You do not need to run `npm install` or any package manager command. All library URLs are already written into the `<head>` and end of `<body>` in `index.html`. Simply open the file and the browser fetches everything automatically on first load.
 </Tip>
+
+<Warning>
+  Cart and wishlist data are stored in your browser's `localStorage`. This means the data is tied to the specific browser and device being used — it does not sync across devices. If a user clears their browser data or uses a private/incognito window, their saved cart and wishlist will not be present.
+</Warning>

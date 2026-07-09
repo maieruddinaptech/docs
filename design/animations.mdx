@@ -1,0 +1,111 @@
+---
+title: "Animations and Effects in Book Paradise"
+sidebarTitle: "Animations"
+description: "Book Paradise uses AOS for scroll-triggered animations, Animate.css for entrance effects, CSS keyframes for floating books and the loading screen, and SweetAlert2 for interactive alerts."
+---
+
+Book Paradise uses a layered animation system where each layer handles a distinct type of motion: AOS drives scroll-triggered reveals that bring content into view as you explore the page, Animate.css provides polished entrance effects on modals and hero elements, pure CSS keyframes power the ambient floating and loading animations that run continuously in the background, and a custom scroll progress bar gives live visual feedback on reading position. Together these layers create a dynamic, high-end feel without overwhelming the shopping experience.
+
+## AOS (Animate On Scroll)
+
+AOS is initialized once in `script.js` with an 800ms duration and `once: true`, so each element animates into view exactly once when it first enters the viewport:
+
+```js script.js
+AOS.init({ duration: 800, once: true });
+```
+
+To animate any element on scroll, add a `data-aos` attribute directly to the HTML tag. You do not need to write any additional JavaScript — AOS handles everything once it is initialized.
+
+**Common `data-aos` values used in Book Paradise:**
+
+- `fade-up` — element fades in while rising from below (default for book cards)
+- `fade-in` — element fades in in place
+- `zoom-in` — element scales up from slightly smaller while fading in
+- `slide-left` — element slides in from the right edge
+
+Here is how book cards in the catalog receive staggered scroll animations:
+
+```html index.html
+<div class="book-card" data-aos="fade-up" data-aos-delay="100">
+  <!-- card content -->
+</div>
+```
+
+The `data-aos-delay` attribute (in milliseconds) staggers animations across a grid of cards so they cascade in sequence rather than all appearing at once. Increment the delay by 100ms per card — `100`, `200`, `300`, and so on — to create a smooth wave effect across each row.
+
+<Note>
+  Setting `once: true` in AOS means animations play only the first time an element scrolls into view, not every time the user scrolls past it. This keeps the experience feeling intentional rather than distracting. If you want elements to re-animate every time they enter the viewport, change this to `once: false`.
+</Note>
+
+## Animate.css
+
+Animate.css provides ready-made entrance animations applied via CSS class names — no JavaScript configuration required. In Book Paradise it is used for modal entrance effects and key hero elements.
+
+Apply an Animate.css animation by adding two classes to any element: the base `animate__animated` class, followed by the specific animation class:
+
+```html index.html
+<h1 class="hero-title animate__animated animate__fadeInDown">
+  Welcome to Book Paradise
+</h1>
+```
+
+**Animation classes used in Book Paradise:**
+
+- `animate__fadeInDown` — hero headline drops in from above on page load
+- `animate__bounceIn` — cart icon badge bounces in when an item is added to the cart
+
+## CSS Keyframe Animations
+
+Several ambient and functional animations are defined as CSS `@keyframes` directly in `style.css`. These run independently of scroll position or user interaction.
+
+**Floating books** — decorative book illustrations in the hero section loop a gentle vertical bob using the `float` keyframe:
+
+```css style.css
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-18px); }
+}
+.floating-book { animation: float 3s ease-in-out infinite; }
+```
+
+**Loading screen spinner** — a circular spinner uses `@keyframes spin` with a full 360° rotation to indicate that the page is loading.
+
+**Typing cursor** — the blinking cursor next to the hero tagline uses `@keyframes blink`, which toggles the cursor pseudo-element's opacity between `1` and `0` to simulate a real text cursor.
+
+## Scroll Progress Bar
+
+A thin gold bar runs along the very top of the page and grows wider as you scroll down, giving a continuous visual indicator of how far through the page content you have read. It is implemented as a fixed `<div>` whose `width` is updated on every `scroll` event in `script.js`:
+
+```js script.js
+window.addEventListener('scroll', () => {
+  const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('scroll-progress').style.width = scrolled + '%';
+});
+```
+
+The bar's background color is set to `var(--color-gold)` in `style.css` so it automatically follows any accent color changes you make.
+
+## Hover Effects
+
+Book cards respond to pointer hover with two simultaneous effects defined in `style.css`:
+
+- **Scale:** The card grows slightly with `transform: scale(1.03)` and a smooth `transition`, giving a tactile sense of the card lifting toward you.
+- **Overlay:** A dark translucent overlay fades in over the cover image on `:hover`, revealing quick-action buttons (Add to Cart, Preview) that are hidden at rest.
+
+Both effects are handled entirely in CSS with no JavaScript required.
+
+## Loading Screen
+
+A full-screen navy overlay with a gold spinner is displayed for approximately 1.5 seconds on initial page load, masking the brief moment before all assets are ready. Once the window `load` event fires in `script.js`, the overlay's opacity is set to `0` and it transitions out smoothly before being removed from the DOM. This prevents users from seeing a partially rendered or unstyled page on slower connections.
+
+<Tip>
+  To respect users who have enabled the operating system's reduced-motion preference, wrap the `AOS.init()` call in a media query check in `script.js`:
+
+  ```js script.js
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    AOS.init({ duration: 800, once: true });
+  }
+  ```
+
+  This disables scroll-triggered animations entirely for those users while leaving all other page functionality intact.
+</Tip>

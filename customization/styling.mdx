@@ -1,0 +1,160 @@
+---
+title: "Customizing Book Paradise Colors, Fonts, and Styles"
+sidebarTitle: "Styling"
+description: "Change the Book Paradise look and feel by editing CSS variables in style.css. Swap colors, update fonts, adjust card styles, and tweak animations without touching the HTML."
+---
+
+All visual customization in Book Paradise starts in `style.css`. The stylesheet is built around CSS custom properties (variables) declared in a single `:root` block, so a one-line color change at the top of the file propagates instantly to every section, card, button, and heading across the page. You rarely need to hunt down individual selectors — change the variable, save the file, and refresh your browser.
+
+## Changing the Color Scheme
+
+Open `style.css` and locate the `:root` block near the top. Every brand color, font stack, and spacing token is defined here:
+
+```css style.css
+:root {
+  /* Core palette */
+  --color-navy:   #0a0f2c;  /* main background */
+  --color-gold:   #d4af37;  /* accents, borders, headings */
+  --color-white:  #ffffff;  /* text on dark backgrounds */
+  --color-cream:  #f5f0e8;  /* card and section backgrounds */
+  --color-accent: #ef7025;  /* CTA buttons */
+  --color-teal:   #4fa1ab;  /* links and secondary accents */
+
+  /* Typography */
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body:    'Poppins', Arial, sans-serif;
+
+  /* Spacing */
+  --section-padding: 80px 0;
+  --card-radius:     12px;
+}
+```
+
+Replace any hex value to immediately retheme the entire store. For example, swapping `--color-navy` to `#1a1a2e` gives the background a slightly warmer deep blue without touching a single other rule.
+
+<Tip>
+  CSS variables cascade — one change in `:root` propagates everywhere the variable is referenced. This means you can completely re-skin the store by editing fewer than ten lines, with no risk of missing a stray hardcoded color.
+</Tip>
+
+### Variable reference
+
+| Variable | Default | Used for |
+|---|---|---|
+| `--color-navy` | `#0a0f2c` | Page background, navbar, footer |
+| `--color-gold` | `#d4af37` | Accents, card borders, star icons, section headings |
+| `--color-white` | `#ffffff` | Body text on dark backgrounds |
+| `--color-cream` | `#f5f0e8` | Card surfaces, light section backgrounds |
+| `--color-accent` | `#ef7025` | "Add to Cart" and primary CTA buttons |
+| `--color-teal` | `#4fa1ab` | Links, badges, secondary interactive elements |
+| `--font-heading` | Playfair Display / Georgia | All `<h1>`–`<h4>` elements |
+| `--font-body` | Poppins / Arial | Paragraphs, labels, prices |
+| `--section-padding` | `80px 0` | Top/bottom padding on every major section |
+| `--card-radius` | `12px` | Corner radius on cards, modals, and buttons |
+
+## Changing Fonts
+
+Book Paradise ships with two Google Fonts: **Playfair Display** (headings) and **Poppins** (body text). To swap them out:
+
+<Steps>
+  <Step title="Pick your new fonts">
+    Browse [fonts.google.com](https://fonts.google.com) and note the exact font names you want — one for headings and one for body text.
+  </Step>
+  <Step title="Update the Google Fonts link in index.html">
+    Find the `<link>` tag in the `<head>` of `index.html` that loads the current fonts and replace the family names in the URL:
+
+    ```html index.html
+    <!-- Replace Playfair+Display and Poppins with your chosen fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Your+Heading+Font:wght@400;700&family=Your+Body+Font:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    ```
+  </Step>
+  <Step title="Update the CSS variables in style.css">
+    Change `--font-heading` and `--font-body` in the `:root` block to match:
+
+    ```css style.css
+    --font-heading: 'Your Heading Font', Georgia, serif;
+    --font-body:    'Your Body Font', Arial, sans-serif;
+    ```
+
+    The fallback fonts after the comma (`Georgia, serif` and `Arial, sans-serif`) display if the Google Fonts request fails. Update them to something similarly styled if you like.
+  </Step>
+</Steps>
+
+## Card Styles
+
+The `.book-card` class controls the appearance of every product card in the grid. By default, cards use a frosted-glass effect achieved with `backdrop-filter`:
+
+```css style.css
+.book-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: var(--card-radius);
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.book-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 12px 40px rgba(212,175,55,0.15);
+}
+```
+
+Common tweaks you might make:
+
+- **Increase card opacity** — raise the alpha value in `rgba(255, 255, 255, 0.06)` toward `0.12` or higher for a brighter card surface.
+- **Change the border color** — replace `rgba(212, 175, 55, 0.25)` with any color to shift the card edge away from gold.
+- **Reduce the hover lift** — lower `scale(1.03)` to `scale(1.01)` for a subtler interaction.
+- **Adjust corner rounding** — change `--card-radius` in `:root` to affect all cards at once.
+
+<Note>
+  `backdrop-filter: blur()` is supported in all modern browsers including Chrome, Edge, Safari, and Firefox 103+. In older environments it degrades gracefully — the card simply renders without the blur effect, but remains fully functional.
+</Note>
+
+## Custom Scrollbar
+
+Book Paradise includes a styled scrollbar for browsers that support the WebKit scrollbar API (Chrome, Edge, Safari). The rules live in `style.css` under the `::-webkit-scrollbar` selectors:
+
+```css style.css
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-navy);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+```
+
+To change the scrollbar color, update `--color-gold` in the `:root` block (which also updates the thumb here) or replace the variable reference directly in the thumb rule with any hex or `rgba` value.
+
+## Scroll Progress Bar
+
+A thin progress bar at the top of the viewport fills as you scroll down the page. It is controlled by the `.scroll-progress` class:
+
+```css style.css
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--color-gold);
+  z-index: 9999;
+  transition: width 0.1s linear;
+}
+```
+
+Set the `background` property to any color or gradient to match your scheme. For example, a two-color gradient:
+
+```css style.css
+.scroll-progress {
+  background: linear-gradient(to right, var(--color-teal), var(--color-accent));
+}
+```
+
+The `width` of this element is updated dynamically by `script.js` as the user scrolls, so you only need to touch the color here.

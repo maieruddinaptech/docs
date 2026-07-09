@@ -1,0 +1,136 @@
+---
+title: "Book Paradise Home Section: Hero, Animations & Counters"
+sidebarTitle: "Home & Hero"
+description: "The Book Paradise home section features a full-screen hero banner with a typing effect, floating books, particle background, animated counters, and glassmorphism CTA cards."
+---
+
+The Book Paradise home section is the first thing visitors see, and it is designed to make an immediate impression. A full-screen hero banner, ambient particle effects, floating book icons, and a live typing headline work together to communicate the store's identity before a single book title is read. Below the hero, animated counters and glassmorphism cards reinforce trust and invite further exploration. Every visual element is built with pure CSS and Vanilla JavaScript — no external animation libraries required.
+
+## Hero Banner
+
+The hero occupies 100% of the viewport height (`100vh`) so it fills the screen on every device. A dark navy overlay (`rgba(15, 20, 40, 0.82)`) sits on top of a rich background image, ensuring that all text remains legible regardless of the underlying artwork.
+
+<CardGroup cols={2}>
+  <Card title="Browse Books CTA" icon="book-open">
+    Clicking **Browse Books** smoothly scrolls the page down to the `#products` section using native CSS scroll-behavior, so visitors land directly in the catalog without any page reload.
+  </Card>
+  <Card title="View Wishlist CTA" icon="heart">
+    Clicking **View Wishlist** opens the wishlist sidebar without navigating away from the page, letting returning visitors jump straight to their saved titles.
+  </Card>
+</CardGroup>
+
+The two CTA buttons are stacked on mobile and placed side-by-side on tablet and desktop using Bootstrap 5's `d-flex flex-wrap gap-3` utilities.
+
+## Typing Effect
+
+Beneath the main headline you will see a tagline that cycles through a curated list of phrases. This effect is driven by a lightweight JavaScript loop in `script.js` that types each character one at a time, pauses, then erases and moves on to the next phrase.
+
+To customize the phrases, open `script.js` and locate the `typingPhrases` array near the top of the file:
+
+```js script.js
+const typingPhrases = [
+  "Discover Your Next Story",
+  "Explore New Worlds",
+  "Find Your Perfect Read"
+];
+```
+
+You can add, remove, or reorder entries freely. The loop will pick up your changes immediately on the next page load. If you want to adjust the typing speed, modify the `typingSpeed` (milliseconds per character) and `pauseDuration` (milliseconds between phrases) constants defined just below the array.
+
+## Floating Books
+
+Decorative book emojis and SVG icons drift gently across the hero area, adding depth without distracting from the headline. Each icon is an absolutely positioned `<span>` or `<img>` element that carries the `.floating-book` CSS class.
+
+The animation is defined in `style.css`:
+
+```css style.css
+@keyframes floatBook {
+  0%   { transform: translateY(0px) rotate(0deg);   opacity: 0.7; }
+  50%  { transform: translateY(-24px) rotate(6deg); opacity: 1;   }
+  100% { transform: translateY(0px) rotate(0deg);   opacity: 0.7; }
+}
+
+.floating-book {
+  position: absolute;
+  animation: floatBook 5s ease-in-out infinite;
+  pointer-events: none;
+  user-select: none;
+}
+```
+
+Each icon in `index.html` has an inline `animation-delay` so they do not all move in sync. To add more icons, copy an existing `.floating-book` element and adjust its `top`, `left`, `font-size`, and `animation-delay` inline styles.
+
+## Particle Background
+
+A constellation of small glowing dots provides ambient depth behind the hero content. These particles are rendered entirely with CSS pseudo-elements and `@keyframes` — there is no canvas, no WebGL, and no JavaScript involved.
+
+<Note>
+  The particle effect is purely CSS-based and imposes no measurable performance cost on modern browsers. It uses `will-change: transform` on each particle to keep animations compositor-thread friendly.
+</Note>
+
+If you prefer a cleaner, distraction-free hero, you can disable particles by removing the `.particles` class from the hero `<section>` element in `index.html`:
+
+```html index.html
+<!-- Particles enabled (default) -->
+<section id="home" class="hero particles">
+
+<!-- Particles disabled -->
+<section id="home" class="hero">
+```
+
+## Animated Counters
+
+Three scroll-triggered counters appear beneath the hero, highlighting the store's reach at a glance — for example **5,000+ Books Sold**, **1,200+ Happy Readers**, and **24 Curated Titles**. The counters begin animating the first time the user scrolls them into view, using an `IntersectionObserver` that calls the `countUp()` function in `script.js`.
+
+```js script.js
+function countUp(el) {
+  const target = parseInt(el.getAttribute("data-target"), 10);
+  const duration = 1800; // ms
+  const step = target / (duration / 16);
+  let current = 0;
+
+  const timer = setInterval(() => {
+    current += step;
+    if (current >= target) {
+      el.textContent = target.toLocaleString();
+      clearInterval(timer);
+    } else {
+      el.textContent = Math.floor(current).toLocaleString();
+    }
+  }, 16);
+}
+```
+
+<Tip>
+  You can change the final value of any counter without touching JavaScript. Simply update the `data-target` attribute on the corresponding HTML element:
+
+  ```html index.html
+  <!-- Change 5000 to any number you like -->
+  <span class="counter" data-target="5000">0</span>
+  ```
+
+  The `countUp()` function reads `data-target` at runtime, so your new number is picked up automatically on the next page load.
+</Tip>
+
+## Glassmorphism CTA Cards
+
+Directly below the counters, a row of semi-transparent frosted-glass cards invites visitors to explore popular categories or jump to featured collections. Each card is styled with the CSS `backdrop-filter` property, which blurs the content behind it to produce the characteristic frosted-glass look.
+
+```css style.css
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+```
+
+The cards are arranged in a responsive Bootstrap 5 grid (`col-12 col-md-4`) so they stack vertically on mobile and spread across three columns on medium screens and above. To change the card content, edit the corresponding `<div class="glass-card">` blocks in `index.html`.

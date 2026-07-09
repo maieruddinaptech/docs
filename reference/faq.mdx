@@ -1,0 +1,165 @@
+---
+title: "Book Paradise FAQ and Troubleshooting"
+sidebarTitle: "FAQ"
+description: "Answers to common questions about Book Paradise: browser support, cart persistence, adding books, customization, deployment, and performance."
+---
+
+If you run into an issue or have a question about how Book Paradise works, you'll likely find the answer below. The FAQ covers everything from deployment and browser support to cart behavior, customization, and accessibility. Browse the topics or jump straight to the one that matches your situation.
+
+## Frequently Asked Questions
+
+<Accordion title="Does Book Paradise need a server or backend?">
+  No. Book Paradise is 100% client-side. You can open `index.html` directly in any modern browser, or serve it from any static hosting platform — there is no server-side code, database, or API to set up.
+
+  Popular free options include:
+  - **GitHub Pages** — push your files to a repository and enable Pages in Settings
+  - **Netlify** — drag and drop your project folder onto the Netlify dashboard
+  - **Vercel** — import from GitHub or upload directly
+  - **Cloudflare Pages** — connect your repository and deploy in seconds
+</Accordion>
+
+<Accordion title="Which browsers are supported?">
+  Book Paradise supports all modern browsers:
+
+  | Browser | Minimum Version |
+  |---|---|
+  | Chrome | 90+ |
+  | Firefox | 88+ |
+  | Safari | 14+ |
+  | Edge | 90+ |
+
+  Internet Explorer is **not** supported. IE lacks support for CSS custom properties, the Fetch API, and other modern features that Book Paradise relies on.
+</Accordion>
+
+<Accordion title="Why did my cart disappear?">
+  Cart data is stored in your browser's `localStorage`. It will be cleared in the following situations:
+
+  - You cleared your browser's site data (**Settings → Privacy → Clear browsing data**)
+  - You are browsing in **incognito / private mode**, which discards `localStorage` when the window closes
+  - You opened the site in a **different browser or on a different device** — `localStorage` is not shared across browsers or synced between devices
+
+  If you need persistent, cross-device cart storage, you would need to add a backend and a database. See [Cart & LocalStorage](/customization/localstorage) for more details.
+</Accordion>
+
+<Accordion title="How do I deploy Book Paradise to the web?">
+  Upload the three project files — `index.html`, `style.css`, and `script.js` — to any static hosting provider. No server-side configuration is needed.
+
+  Quick-start guides for common hosts:
+
+  - **GitHub Pages**: commit the files to a repo, go to **Settings → Pages**, set the source to the `main` branch, and your site will be live at `https://username.github.io/repo-name`.
+  - **Netlify**: open [netlify.com](https://netlify.com), sign in, and drag your project folder onto the deploy area. Your site goes live instantly with a free `*.netlify.app` domain.
+  - **Vercel**: install the Vercel CLI (`npm i -g vercel`) or connect your GitHub repo in the Vercel dashboard and click **Deploy**.
+  - **Cloudflare Pages**: connect your repository in the Cloudflare dashboard, set the build command to blank, and deploy.
+</Accordion>
+
+<Accordion title="Can I add more than 24 books?">
+  Yes. Open `script.js` and find the `books` array. Add as many new book objects as you like — the grid expands automatically to fit them. Each object must include a unique `id` property to avoid conflicts with the cart and wishlist logic.
+
+  ```js script.js
+  const books = [
+    // existing books ...
+    {
+      id: 25,
+      title: "My New Book",
+      author: "Author Name",
+      price: 14.99,
+      category: "fiction",
+      cover: "https://example.com/cover.jpg",
+      rating: 4.5
+    }
+  ];
+  ```
+
+  See [Adding Books](/customization/adding-books) for the full object schema and step-by-step instructions.
+</Accordion>
+
+<Accordion title="How do I change the currency symbol?">
+  Search `script.js` for the `$` symbol or a function named `formatPrice`. Update the currency symbol directly, or switch to JavaScript's built-in `toLocaleString` method for full locale and currency support:
+
+  ```js script.js
+  // Simple symbol swap
+  function formatPrice(amount) {
+    return `£${amount.toFixed(2)}`;
+  }
+
+  // Locale-aware formatting (recommended)
+  function formatPrice(amount) {
+    return amount.toLocaleString('en-GB', { style: 'currency', currency: 'GBP' });
+  }
+  ```
+
+  Replace `'en-GB'` and `'GBP'` with the locale and currency code that matches your store.
+</Accordion>
+
+<Accordion title="The fonts aren't loading. What should I do?">
+  Book Paradise loads **Playfair Display** and **Poppins** from Google Fonts over the internet. If the fonts are not rendering correctly:
+
+  1. **Check your internet connection** — Google Fonts requires an active connection to `fonts.googleapis.com`.
+  2. **Check for network restrictions** — some corporate networks or browser extensions block external font requests.
+  3. **Host the fonts locally** — download the font files from [Google Fonts](https://fonts.google.com), place them in a `fonts/` folder in your project, and add `@font-face` rules to `style.css`:
+
+  ```css style.css
+  @font-face {
+    font-family: 'Playfair Display';
+    src: url('fonts/PlayfairDisplay-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+  }
+  ```
+
+  Then remove the Google Fonts `<link>` tag from `index.html`.
+</Accordion>
+
+<Accordion title="How do I add a real payment system?">
+  Book Paradise's checkout flow is a UI demonstration — the `showCheckoutAlert()` function displays a SweetAlert2 confirmation dialog but does not process any real payment.
+
+  To accept real payments, replace that function with a redirect to a hosted payment page from a provider such as Stripe:
+
+  ```js script.js
+  function showCheckoutAlert() {
+    // Replace with your actual Stripe Payment Link
+    window.location.href = 'https://buy.stripe.com/your-payment-link';
+  }
+  ```
+
+  You can also integrate [Stripe.js](https://stripe.com/docs/js) directly for a fully embedded checkout experience without redirecting users away from your site.
+</Accordion>
+
+<Accordion title="Can I use Book Paradise commercially?">
+  Check the license file included in the repository for the full usage terms. The license file defines whether commercial use, redistribution, or modification is permitted. If no license file is present, standard copyright law applies and you should contact the author before using the project commercially.
+</Accordion>
+
+<Accordion title="How do I disable animations for accessibility?">
+  Users who have enabled the **Reduce Motion** setting in their OS or browser prefer less movement on screen. You can respect that preference by wrapping the AOS initialization in a `prefers-reduced-motion` media query check:
+
+  ```js script.js
+  // Only initialize AOS if the user has not requested reduced motion
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    AOS.init({
+      duration: 800,
+      once: true
+    });
+  }
+  ```
+
+  You can apply the same pattern to any other animation triggers in `script.js`. For Animate.css classes added dynamically, check the same media query before adding the class. This pattern is also recommended by the [WCAG 2.1 Success Criterion 2.3.3](https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html).
+</Accordion>
+
+---
+
+## Keep Exploring
+
+<CardGroup cols={2}>
+  <Card title="Add Books" icon="book-open" href="/customization/adding-books">
+    Learn how to add new books to the catalog by editing the `books` array in `script.js`.
+  </Card>
+  <Card title="Styling" icon="palette" href="/customization/styling">
+    Customize colors, fonts, spacing, and layout by editing `style.css` and CSS variables.
+  </Card>
+  <Card title="Cart & LocalStorage" icon="cart-shopping" href="/customization/localstorage">
+    Understand how cart and wishlist data is stored and managed in the browser.
+  </Card>
+  <Card title="Dependencies" icon="box" href="/reference/dependencies">
+    View all CDN libraries used by Book Paradise and learn how to upgrade or localize them.
+  </Card>
+</CardGroup>

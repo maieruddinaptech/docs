@@ -1,0 +1,71 @@
+---
+title: "Book Paradise Typography: Playfair Display and Poppins"
+sidebarTitle: "Typography"
+description: "Book Paradise pairs Playfair Display for luxury serif headings with Poppins for clean sans-serif body text, both loaded from Google Fonts via CDN."
+---
+
+Book Paradise pairs two Google Fonts chosen for contrast and complementarity: Playfair Display brings the editorial gravitas of a high-end literary magazine to every headline, while Poppins keeps body copy, navigation, and buttons crisp and effortlessly readable at any size. The result is a typographic hierarchy that feels both luxurious and immediately legible — exactly right for a premium bookstore.
+
+## Heading Font: Playfair Display
+
+Playfair Display is a classical serif typeface with high-contrast strokes and elegant details that evoke the feel of fine book printing. In Book Paradise it is used for:
+
+- **H1–H3 section headings** throughout the page
+- **Book titles** displayed in the hero section
+- **Section label headings** such as "Featured Books" and "Our Story"
+
+The font is loaded from Google Fonts with weights 400 (regular), 700 (bold), and 900 (black) to support the full range of heading emphasis levels across the design.
+
+## Body Font: Poppins
+
+Poppins is a geometric humanist sans-serif that pairs naturally with display serifs. Its rounded letterforms and generous x-height make it highly readable at small sizes, and its extensive weight range gives you fine control over visual hierarchy in body content. In Book Paradise it is applied to:
+
+- Body text and descriptive paragraphs
+- Navigation links and dropdown items
+- Buttons and badge labels
+- Form inputs and helper text
+
+The weights loaded are 300 (light), 400 (regular), 500 (medium), and 600 (semibold).
+
+## Google Fonts CDN Link
+
+Both fonts are loaded via a single optimized Google Fonts URL already present in `index.html`. The two `preconnect` hints tell the browser to open connections to the Google Fonts servers as early as possible, reducing latency before the stylesheet is fetched:
+
+```html index.html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+```
+
+<Tip>
+  `font-display: swap` is set via the `&display=swap` parameter in the Google Fonts URL, so the browser renders text immediately in a system fallback font and swaps to Playfair Display or Poppins once they finish loading. Your visitors always see readable content — no invisible text flash.
+</Tip>
+
+## CSS Font Assignments
+
+The font families are stored as CSS variables in `style.css` and then applied to their respective element groups. Keeping the font names in variables means you only need to update one line per font if you ever swap typefaces:
+
+```css style.css
+:root {
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body:    'Poppins', Arial, sans-serif;
+}
+
+h1, h2, h3 { font-family: var(--font-heading); }
+body, p, a, button { font-family: var(--font-body); }
+```
+
+## Changing the Fonts
+
+To swap either font for a different Google Font, follow these two steps:
+
+<Steps>
+  <Step title="Update the Google Fonts URL in index.html">
+    Replace the family names and weight parameters in the `<link>` tag with your chosen fonts. For example, replace `Playfair+Display:wght@400;700;900` with your new heading font and its required weights.
+  </Step>
+  <Step title="Update the CSS variables in style.css">
+    Change the font name inside `--font-heading` or `--font-body` in the `:root` block to match what you loaded. Update the fallback stack alongside it if appropriate.
+  </Step>
+</Steps>
+
+No other changes are needed — because every heading and body element references the variables rather than hard-coded font names, the new typeface propagates automatically across the entire site.

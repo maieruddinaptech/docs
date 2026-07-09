@@ -1,0 +1,132 @@
+---
+title: "Add and Edit Books in Your Book Paradise Catalog"
+sidebarTitle: "Adding Books"
+description: "Customize the Book Paradise catalog by editing the books array in script.js. Add titles, update prices, swap cover images, and set categories and ratings in minutes."
+---
+
+All catalog data in Book Paradise lives in the `books` array at the top of `script.js`. You never need to touch the HTML — every card, filter result, and quick-view modal is generated automatically from that single data source. Whether you want to add a new title, update a price, or remove a book entirely, this guide walks you through exactly what to change and where.
+
+## Book Object Schema
+
+Each book in the catalog is represented by a plain JavaScript object with the following fields. Copy this shape whenever you create a new entry:
+
+```js script.js
+{
+  id: 25,                          // Unique integer ID
+  title: "Your Book Title",        // Displayed on the card and in quick view
+  author: "Author Name",           // Shown below the title
+  category: "Fiction",             // Must match a filter button label
+  price: 16.99,                    // Number; displayed with currency symbol
+  rating: 4.5,                     // 1.0 – 5.0; renders as star icons
+  badge: "New Arrival",            // Optional: "Bestseller", "New Arrival", "Sale", ""
+  image: "https://covers.openlibrary.org/b/isbn/YOUR_ISBN-L.jpg",
+  description: "A short blurb shown in the Quick View modal."
+}
+```
+
+## Adding a Book
+
+<Steps>
+  <Step title="Open script.js">
+    Open `script.js` in your code editor. The `books` array is declared at the very top of the file, making it easy to locate without scrolling.
+  </Step>
+  <Step title="Find the books array">
+    Locate the line that begins with `const books = [`. Everything between the opening `[` and the closing `]` is your catalog.
+  </Step>
+  <Step title="Paste a new object">
+    Copy any existing book object in the array and paste it as the **last item**, just before the closing `]`. Make sure the object before it ends with a comma:
+
+    ```js script.js
+    // ...previous book object,
+    {
+      id: 25,
+      title: "Your Book Title",
+      author: "Author Name",
+      category: "Fiction",
+      price: 16.99,
+      rating: 4.5,
+      badge: "New Arrival",
+      image: "https://covers.openlibrary.org/b/isbn/YOUR_ISBN-L.jpg",
+      description: "A short blurb shown in the Quick View modal."
+    }
+  ] // <-- closing bracket of the books array
+    ```
+  </Step>
+  <Step title="Update all fields">
+    Replace every field value with your book's real data. Pay particular attention to the `id` field — it **must be a unique integer** not used by any other book in the array. Also confirm that the `category` value exactly matches one of the existing filter button labels (see [Categories](#categories) below).
+  </Step>
+  <Step title="Save and refresh">
+    Save `script.js` and open (or refresh) `index.html` in your browser. Your new book will appear in the grid immediately — no build step required.
+  </Step>
+</Steps>
+
+## Finding Cover Images
+
+Book Paradise displays cover images from any publicly hosted HTTPS image URL. The easiest source for real book covers is the **Open Library Covers API**:
+
+```
+https://covers.openlibrary.org/b/isbn/{ISBN}-L.jpg
+```
+
+Replace `{ISBN}` with the book's 10- or 13-digit ISBN. For example, the cover for ISBN `9780525559474` is available at:
+
+```
+https://covers.openlibrary.org/b/isbn/9780525559474-L.jpg
+```
+
+<Tip>
+  Open Library provides free, legal, high-resolution cover images for millions of books. You can look up any ISBN on [openlibrary.org](https://openlibrary.org) and pull its cover directly — no API key or account needed.
+</Tip>
+
+If Open Library doesn't have a cover for a particular title, you can use any other publicly hosted HTTPS image URL. Just make sure the image is square or portrait-oriented (roughly 2:3 ratio) to fit the card layout without distortion.
+
+## Categories
+
+The existing filter buttons in Book Paradise cover the following categories:
+
+| Label | `category` value to use |
+|---|---|
+| All | *(shows every book — no filter)* |
+| Fiction | `"Fiction"` |
+| Non-Fiction | `"Non-Fiction"` |
+| Mystery | `"Mystery"` |
+| Fantasy | `"Fantasy"` |
+| Sci-Fi | `"Sci-Fi"` |
+| Biography | `"Biography"` |
+| Self-Help | `"Self-Help"` |
+| Classic | `"Classic"` |
+
+The `category` value in your book object must match a filter button label **exactly** (including capitalisation and hyphens). If it doesn't match, the book will still appear under "All" but will never show when that filter is active.
+
+### Adding a new category
+
+If you want to introduce a category that isn't in the list above:
+
+<Steps>
+  <Step title="Add a filter button in index.html">
+    In the products section of `index.html`, find the row of filter `<button>` elements and add a new one:
+
+    ```html index.html
+    <button class="filter-btn" data-filter="YourCategory">YourCategory</button>
+    ```
+
+    The `data-filter` attribute value is what `script.js` uses to match books. Keep it concise and consistent.
+  </Step>
+  <Step title="Use the exact same string in your book objects">
+    Set the `category` field in every relevant book object to the identical string you used in `data-filter`:
+
+    ```js script.js
+    category: "YourCategory",
+    ```
+
+    Even a single extra space or different capitalisation will break the filter match.
+  </Step>
+</Steps>
+
+## Removing a Book
+
+To remove a book from the catalog, delete its entire object from the `books` array in `script.js` — including the surrounding `{` and `}` braces and the trailing comma if present. Save the file and refresh your browser; the grid re-renders automatically and the book disappears from all views.
+
+<Warning>
+  Every book must have a **unique `id`**. If two books share the same `id`, the cart and wishlist will behave unpredictably — adding one book may update the other's quantity, and removing one may silently delete both from the wishlist. Always check that your new `id` isn't already in use before saving.
+</Warning>

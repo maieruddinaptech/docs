@@ -1,0 +1,58 @@
+---
+title: "Book Paradise: A Luxury Single-Page Bookstore"
+sidebarTitle: "Introduction"
+description: "Book Paradise is a fully client-side bookstore built with HTML5, CSS3, Bootstrap 5, and Vanilla JavaScript — no backend or build tool required."
+---
+
+Book Paradise is a premium online bookstore that runs entirely in your browser — no server, no database, no build pipeline. You get a fully functional, beautifully designed storefront by simply opening a single HTML file. Whether you are exploring the project as a learning resource or deploying it as a real storefront, everything you need ships in three plain files.
+
+## What Book Paradise Is
+
+Book Paradise is a single-page application (SPA) built with pure HTML5, CSS3, Bootstrap 5, and Vanilla JavaScript. There is no Node.js backend, no REST API, and no bundler involved. All interactivity — browsing books, managing a cart, saving a wishlist, submitting a contact form — happens entirely on the client side. Third-party libraries are pulled in via CDN links already embedded in `index.html`, so you never run a package manager command.
+
+## Key Benefits
+
+- **Zero setup** — open `index.html` in any modern browser and you are live instantly
+- **No server costs** — host the three files on any static file host (GitHub Pages, Netlify, Vercel free tier) at zero infrastructure cost
+- **Instant page load** — with no server round-trips for data, the storefront renders in milliseconds
+- **Works offline after first load** — once CDN assets are cached by the browser, Book Paradise is fully usable without an active internet connection
+
+## Six Main Sections
+
+Book Paradise is organized into six distinct sections, each serving a clear role in the shopping experience:
+
+1. **Home** — a full-viewport hero with a headline, call-to-action buttons, and animated entrance effects
+2. **Products** — the main book catalog with search, category filters, sort controls, and a 24-book grid
+3. **About** — brand story, team highlights, and a statistics banner
+4. **Contact** — a validated contact form with SweetAlert2 feedback on submission
+5. **Login Modal** — a Bootstrap modal for account sign-in (client-side demo flow)
+6. **Cart Sidebar** — an off-canvas sliding panel showing cart items, quantities, subtotal, and checkout
+
+## Design & Typography
+
+The storefront uses a luxury dark navy, gold, and white color palette that communicates premium quality at a glance. Typography is handled by two Google Fonts: **Playfair Display** for headings (elegant serif with high contrast) and **Poppins** for body text (clean, geometric sans-serif). Glassmorphism card styles, smooth AOS scroll animations, and a custom scrollbar reinforce the high-end aesthetic throughout.
+
+## Persistent Cart & Wishlist
+
+Your customers' cart and wishlist data survive page refreshes automatically. Book Paradise writes both collections to `localStorage` under the keys `bp_cart` and `bp_wishlist`, so items are still present when a shopper returns to the tab or reopens the browser — no login or server session required.
+
+## Explore Further
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Be up and running in under five minutes — no installs, no terminal required.
+  </Card>
+  <Card title="Book Catalog" icon="book-open" href="/features/book-catalog">
+    Explore the 24-book data model, search, filters, and sort controls.
+  </Card>
+  <Card title="Shopping Cart" icon="cart-shopping" href="/features/shopping-cart">
+    Learn how the cart sidebar, quantity controls, and checkout flow work.
+  </Card>
+  <Card title="Theme & Colors" icon="palette" href="/design/theme-colors">
+    Customize the navy/gold/white palette and typography via CSS variables.
+  </Card>
+</CardGroup>
+
+<Note>
+  Book Paradise is tested and fully supported on all modern browsers — Chrome, Firefox, Safari, and Edge. Internet Explorer is not supported. If you need IE11 compatibility, you would need to transpile the JavaScript and replace CSS custom properties with static values.
+</Note>

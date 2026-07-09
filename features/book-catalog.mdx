@@ -1,0 +1,91 @@
+---
+title: "Browsing the Book Paradise Catalog of 24 Titles"
+sidebarTitle: "Book Catalog"
+description: "Book Paradise displays 24 curated books, each with an image, title, author, category, price, star rating, badges, and quick actions including Add to Cart, Wishlist, and Quick View."
+---
+
+Book Paradise ships with a hand-picked catalog of 24 titles spanning eight genres. Every book is represented by a card that is generated dynamically from the `books` array in `script.js` — no hard-coded HTML cards exist in `index.html`. When the page loads, the `renderBooks()` function iterates over the array and injects a fully-formed card for each entry into the `#book-grid` container. This means you can add, edit, or remove titles simply by modifying the JavaScript array, and the entire catalog will update automatically on the next page load.
+
+## Book Card Anatomy
+
+Each card surfaces all the information a reader needs to make a quick purchasing decision. Here is a breakdown of every element you will see on a book card:
+
+<CardGroup cols={2}>
+  <Card title="Cover Image" icon="image">
+    The book's cover is loaded with the native `loading="lazy"` attribute so images below the fold are fetched only when the user scrolls toward them, keeping initial page load fast.
+  </Card>
+  <Card title="Title & Author" icon="pen-nib">
+    The book title is displayed in a bold heading and the author name appears beneath it in a muted secondary style.
+  </Card>
+  <Card title="Category Badge" icon="tag">
+    A colored pill badge identifies the genre at a glance — for example **Fiction**, **Mystery**, or **Self-Help**. Badges map 1-to-1 with the filter buttons in the Products toolbar.
+  </Card>
+  <Card title="Price" icon="dollar-sign">
+    Prices are formatted with a leading currency symbol (e.g., **$14.99**) and displayed prominently near the Add to Cart button.
+  </Card>
+  <Card title="Star Rating" icon="star">
+    A 1–5 star rating is rendered as a row of filled and empty star icons. The numeric score (e.g., **4.8**) is shown alongside the stars for precision.
+  </Card>
+  <Card title="Availability Badge" icon="circle-check">
+    Each card carries one of three availability states: **In Stock** (green), **Limited** (amber), or **Pre-Order** (blue), drawn from the book object's `badge` field.
+  </Card>
+  <Card title="Add to Cart" icon="cart-shopping">
+    The primary action button adds the book to the cart sidebar and triggers a SweetAlert2 toast confirmation. See the [Shopping Cart](/features/shopping-cart) guide for details.
+  </Card>
+  <Card title="Wishlist Toggle" icon="heart">
+    A heart icon in the card's top-right corner toggles the book in and out of your wishlist. A filled heart indicates the book is currently wishlisted.
+  </Card>
+</CardGroup>
+
+### Quick View Button
+
+A **Quick View** button appears on each card on hover. Clicking it opens a Bootstrap 5 modal that gives you a richer look at the book without leaving the catalog page.
+
+The modal contains:
+
+- A larger version of the cover image
+- The full book description
+- A short author bio snippet
+- The formatted price
+- An **Add to Cart** button that works identically to the one on the card itself
+
+To close the modal, click the × button in the top-right corner, click anywhere outside the modal, or press the `Escape` key.
+
+## Category Badges
+
+All 24 books are assigned to one of the following eight categories. These values are used both as the `category` field in the book object and as the labels on the filter buttons in the Products toolbar:
+
+| Badge Label   | Typical Subject Matter                         |
+|---------------|------------------------------------------------|
+| Fiction       | Literary and contemporary fiction              |
+| Non-Fiction   | Narrative non-fiction and essays               |
+| Mystery       | Crime, thriller, and detective stories         |
+| Fantasy       | Epic and urban fantasy                         |
+| Sci-Fi        | Science fiction and speculative fiction        |
+| Biography     | Memoirs and biographical accounts              |
+| Self-Help     | Personal development and productivity          |
+| Classic       | Timeless works from the literary canon         |
+
+## Book Object Structure
+
+Each entry in the `books` array in `script.js` follows this shape. All fields are required; omitting any field will cause its corresponding card element to render blank or throw a console error.
+
+```js script.js
+{
+  id: 1,
+  title: "The Midnight Library",
+  author: "Matt Haig",
+  category: "Fiction",
+  price: 14.99,
+  rating: 4.8,
+  badge: "Bestseller",
+  image: "https://covers.openlibrary.org/b/isbn/9780525559474-L.jpg",
+  description: "Between life and death there is a library..."
+}
+```
+
+To add a new book, append a new object with a unique `id` to the array and reload the page. To remove a book, delete its object from the array. To edit details such as the price or rating, update the relevant fields directly.
+
+<Note>
+  Book cover images are loaded lazily via the standard `loading="lazy"` HTML attribute that `renderBooks()` sets on every generated `<img>` tag. This means only the covers currently in or near the viewport are fetched on initial load, significantly reducing the number of network requests on page open.
+</Note>

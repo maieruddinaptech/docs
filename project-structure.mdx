@@ -1,0 +1,80 @@
+---
+title: "Book Paradise Project File Structure Explained"
+sidebarTitle: "Project Structure"
+description: "Book Paradise is organized into three files: index.html for markup, style.css for styling, and script.js for all interactivity and data."
+---
+
+Book Paradise follows a deliberate three-file architecture that keeps every concern clearly separated without requiring a build system. You have one file for structure, one for style, and one for behavior — and they stay in the same directory, wired together by relative references. Understanding what lives where makes it straightforward to customize, debug, or extend any part of the storefront.
+
+## File Tree
+
+```text
+book-paradise/
+├── index.html   # Page structure, CDN links, section markup
+├── style.css    # All custom styles, CSS variables, animations
+└── script.js    # Book data, cart logic, UI interactions
+```
+
+---
+
+## index.html
+
+`index.html` is the single entry point of the application. Every section a visitor sees is defined here as semantic HTML5 markup, and every third-party library is loaded via `<link>` and `<script>` tags in this file.
+
+**What it contains:**
+
+- **Semantic section structure** — a `<header>` with the sticky navbar, followed by `<section>` elements with IDs `#home`, `#products`, `#about`, and `#contact`, then a `<footer>`
+- **Login modal** — a Bootstrap `<div class="modal">` component that slides in over the page when the login button is clicked
+- **Cart sidebar** — a Bootstrap offcanvas `<div>` that slides in from the right when the cart icon is activated
+- **CDN `<link>` tags** — Bootstrap 5 CSS, Bootstrap Icons, Font Awesome, AOS, Animate.css, and Google Fonts loaded in `<head>`
+- **CDN `<script>` tags** — Bootstrap 5 JS bundle, AOS initializer, SweetAlert2, and `script.js` loaded before `</body>`
+- **SEO meta tags** — `<meta name="description">`, Open Graph tags, and a canonical `<link>` in `<head>`
+- **JSON-LD script block** — a `<script type="application/ld+json">` block containing structured data for the storefront (Schema.org `Store` type) to improve search engine rich results
+
+---
+
+## style.css
+
+`style.css` holds every visual rule that is not provided by Bootstrap. Rather than scattering overrides across the markup, all custom styling — from the color palette to the card hover effects — lives in one place.
+
+**What it contains:**
+
+- **CSS custom properties** — a `:root` block at the top of the file declares all design tokens: primary colors (`--color-navy`, `--color-gold`, `--color-white`), font families (`--font-heading`, `--font-body`), spacing scales, and border radii. Changing a single variable value reflows the entire theme.
+- **Glassmorphism card styles** — book cards use a semi-transparent background with `backdrop-filter: blur()`, a subtle border, and a soft box shadow to achieve the frosted-glass look consistent with the luxury aesthetic
+- **Custom scrollbar** — `::-webkit-scrollbar` rules style the page scrollbar to match the dark navy and gold palette in Chromium-based browsers
+- **AOS overrides** — small adjustments to AOS default transition timing and easing so animations feel snappier and match the overall motion design
+- **Responsive breakpoints** — `@media` queries fine-tune typography sizes, grid column counts, padding, and hero layout for tablet and mobile viewports
+
+---
+
+## script.js
+
+`script.js` is where all application logic lives. It runs in the browser with no transpilation — plain ES6+ Vanilla JavaScript.
+
+**What it contains:**
+
+- **`books` array** — 24 book objects defined at the top of the file, each with properties: `id`, `title`, `author`, `price`, `originalPrice`, `rating`, `reviewCount`, `category`, `cover` (URL string), `description`, and `badge` (e.g. `"Bestseller"`, `"New"`)
+- **Cart management functions** — read and write the `bp_cart` key in `localStorage`, then trigger a re-render of the cart sidebar
+- **Wishlist logic** — read and write the `bp_wishlist` key in `localStorage`, then toggle the heart icon state on the relevant book card
+- **DOM rendering functions** — generate book card HTML strings from the `books` array and inject them into the `#products` grid
+- **Event listeners** — attached to the search input, category filter chips, sort dropdown, quantity buttons, remove buttons, and navigation links
+- **Form validation** — the contact form checks for non-empty fields, valid email format, and minimum message length before calling SweetAlert2
+- **SweetAlert2 calls** — `showCheckoutAlert()` and the form success handler both fire styled popup dialogs using the `Swal.fire()` API
+
+### Key JavaScript Functions
+
+| Function | Description |
+|---|---|
+| `addToCart(bookId)` | Adds a book to the LocalStorage cart |
+| `removeFromCart(bookId)` | Removes a book from the cart |
+| `updateQuantity(bookId, delta)` | Changes cart item quantity |
+| `toggleWishlist(bookId)` | Adds or removes from wishlist |
+| `searchBooks(query)` | Filters catalog by title or author |
+| `filterByCategory(category)` | Filters catalog by genre |
+| `sortBooks(criterion)` | Sorts by price, rating, or title |
+| `renderCart()` | Re-renders the cart sidebar from localStorage |
+| `showCheckoutAlert()` | Shows SweetAlert2 checkout confirmation |
+
+<Note>
+  All persistent state is stored in `localStorage` under exactly two keys: `bp_cart` (an array of `{ id, quantity }` objects) and `bp_wishlist` (an array of book ID strings). If you ever need to reset the storefront to a clean state during development, run `localStorage.removeItem('bp_cart')` and `localStorage.removeItem('bp_wishlist')` in the browser console.
+</Note>

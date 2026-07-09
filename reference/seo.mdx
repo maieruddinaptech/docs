@@ -1,0 +1,103 @@
+---
+title: "SEO Configuration for Book Paradise"
+sidebarTitle: "SEO"
+description: "Book Paradise includes SEO meta tags, Open Graph tags, Twitter Card tags, JSON-LD structured data, semantic HTML, and lazy-loaded images to maximize search visibility."
+---
+
+Book Paradise ships with a complete set of built-in SEO features so your storefront is discoverable from day one. The `<head>` of `index.html` includes standard meta tags, Open Graph tags for social sharing, Twitter Card tags, and a JSON-LD structured data block that helps search engines understand your content. The page also uses semantic HTML landmarks and lazy-loaded images to further improve crawlability and performance scores.
+
+## Meta Tags
+
+These core meta tags appear in the `<head>` of `index.html`. They tell search engines what your page is about, who authored it, and how it should be indexed.
+
+```html index.html
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Book Paradise — discover 24 curated books. Browse, wishlist, and buy fiction, non-fiction, mystery, fantasy, and more.">
+<meta name="keywords" content="online bookstore, buy books, fiction, non-fiction, fantasy, mystery, book shop">
+<meta name="author" content="Book Paradise">
+<meta name="robots" content="index, follow">
+<title>Book Paradise — Premium Online Bookstore</title>
+```
+
+## Open Graph Tags
+
+Open Graph tags control how your page looks when it is shared on Facebook, LinkedIn, and other platforms that support the Open Graph protocol. They define the title, description, and preview image that appear in link previews.
+
+```html index.html
+<meta property="og:title" content="Book Paradise — Premium Online Bookstore">
+<meta property="og:description" content="Discover 24 curated books. Browse, wishlist, and buy.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yoursite.com">
+<meta property="og:image" content="https://yoursite.com/og-image.jpg">
+```
+
+## Twitter Card Tags
+
+Twitter Card tags control the appearance of your link when it is shared on X (formerly Twitter). The `summary_large_image` card type displays a full-width preview image alongside the title and description.
+
+```html index.html
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Book Paradise — Premium Online Bookstore">
+<meta name="twitter:description" content="Discover 24 curated books.">
+<meta name="twitter:image" content="https://yoursite.com/og-image.jpg">
+```
+
+## JSON-LD Structured Data
+
+The page includes a `<script type="application/ld+json">` block that describes Book Paradise as a `BookStore` entity using the Schema.org vocabulary. This enables rich results in Google Search and helps search engines categorize your site accurately.
+
+```html index.html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BookStore",
+  "name": "Book Paradise",
+  "description": "Premium online bookstore with 24 curated titles.",
+  "url": "https://yoursite.com",
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+```
+
+<Note>
+  JSON-LD is the recommended structured data format by Google. It lives entirely inside a `<script>` tag and does not affect the visible page layout or styling in any way.
+</Note>
+
+## Semantic HTML
+
+Book Paradise uses standard HTML5 landmark elements throughout `index.html`. This helps screen readers navigate the page and gives search engine crawlers clear signals about each section's role.
+
+| Element | Role in the page |
+|---|---|
+| `<header>` | Site branding and top navigation bar |
+| `<nav>` | Navigation links and search controls |
+| `<main>` | Primary content area containing all book sections |
+| `<section>` | Individual content sections (hero, featured, catalog) |
+| `<article>` | Individual book cards |
+| `<aside>` | Cart sidebar panel |
+| `<footer>` | Footer links, copyright, and social icons |
+
+## Lazy Loading
+
+All book cover `<img>` tags include the `loading="lazy"` attribute. This tells the browser to defer loading images that are below the fold until the user scrolls near them, reducing initial page weight and improving Core Web Vitals scores.
+
+```html index.html
+<img src="cover.jpg" alt="Book title" loading="lazy">
+```
+
+## Customizing SEO Before You Deploy
+
+Before publishing your site, replace every placeholder value in the meta tags and JSON-LD block with your real content:
+
+- **`yoursite.com`** → your actual domain (e.g., `bookparadise.store`)
+- **`og-image.jpg`** → a real 1200×630 px preview image hosted on your domain
+- **`description` content** → a concise, keyword-rich description of your specific catalog
+- **`priceCurrency`** → the ISO 4217 currency code you use (e.g., `GBP`, `EUR`)
+
+<Tip>
+  After deploying, submit your URL to [Google Search Console](https://search.google.com/search-console) and use the URL Inspection tool to request indexing. Search Console also surfaces crawl errors, Core Web Vitals data, and structured data validation results so you can monitor your SEO health over time.
+</Tip>

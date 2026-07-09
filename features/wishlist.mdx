@@ -1,0 +1,49 @@
+---
+title: "Saving Books to Your Book Paradise Wishlist"
+sidebarTitle: "Wishlist"
+description: "The Book Paradise wishlist lets you save books for later with a single click. Wishlist items persist in localStorage and can be moved to the cart at any time."
+---
+
+The Book Paradise wishlist gives you a frictionless way to bookmark titles you are interested in without committing to a purchase right away. Whether you are building a reading list, saving gift ideas, or waiting for the right moment to buy, the wishlist lets you flag any of the 24 catalog titles with a single click. Like the cart, the wishlist is backed entirely by your browser's `localStorage`, so your saved books are always there when you return — no account or login required.
+
+## Adding to Your Wishlist
+
+Every book card in the catalog displays a **heart icon** (♡) in its top-right corner.
+
+<Steps>
+  <Step title="Find a book you want to save">
+    Browse or filter the Products section until you spot a title you would like to keep for later.
+  </Step>
+  <Step title="Click the heart icon">
+    Click the heart icon on the book card. The icon transitions from an outlined heart (♡) to a filled, colored heart (♥) to confirm the book has been added to your wishlist. The change is instant and requires no page reload.
+  </Step>
+  <Step title="Remove from wishlist">
+    Click the same filled heart icon again to toggle the book back out of your wishlist. The icon returns to its outlined state and the book's ID is removed from `localStorage`.
+  </Step>
+</Steps>
+
+## Viewing Your Wishlist
+
+You can access your wishlist in two ways:
+
+- **Inline highlighting** — books that are currently in your wishlist are visually distinguished in the main catalog grid with a highlighted heart icon, so you can see your saved titles at a glance while browsing.
+- **Wishlist sidebar** — click the **View Wishlist** button in the hero section or the wishlist icon in the navbar to open a dedicated panel that lists only your wishlisted books, making it easy to review everything you have saved in one place.
+
+## Moving a Book to the Cart
+
+You do not need to navigate back to the main catalog to purchase a wishlisted title. Each book in the wishlist view has its own **Add to Cart** button. Clicking it adds the book to your cart (see [Shopping Cart](/features/shopping-cart) for details) without removing it from the wishlist — you decide when, or whether, to remove the heart.
+
+## Persistence
+
+Your wishlist is stored in `localStorage` as a compact array of book IDs. This keeps the stored data minimal while still allowing the application to reconstruct the full wishlist by cross-referencing the `books` array in `script.js`.
+
+```js Wishlist data shape
+// localStorage key: "bp_wishlist"
+[1, 7, 12]  // Array of book IDs
+```
+
+The wishlist is read from `localStorage` on every page load and used to restore the filled-heart state on all matching book cards, so your wishlist always looks exactly as you left it.
+
+<Note>
+  Wishlist data is stored only in your current browser on your current device. It is not synced across different browsers, other devices, or private/incognito windows. If you clear your browser's site data, your wishlist will be reset.
+</Note>

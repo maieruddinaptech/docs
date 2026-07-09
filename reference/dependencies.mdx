@@ -1,0 +1,80 @@
+---
+title: "Book Paradise CDN Libraries and Dependencies"
+sidebarTitle: "Dependencies"
+description: "Book Paradise loads all its libraries from CDN — Bootstrap 5, Font Awesome, AOS, Animate.css, SweetAlert2, and Google Fonts. No npm install required."
+---
+
+Book Paradise has zero local dependencies — you don't need Node.js, npm, or any build tool to run it. Every third-party library is loaded directly from a CDN via `<link>` and `<script>` tags already in `index.html`. To get started, just open the file in a browser.
+
+## CDN Dependencies
+
+The table below lists every external library the project uses, the version range it targets, what it does, and which CDN serves it.
+
+| Library | Version | Purpose | CDN |
+|---|---|---|---|
+| Bootstrap 5 | 5.3.x | Grid, navbar, modals, buttons | jsDelivr |
+| Bootstrap Icons | 1.11.x | Icon set for UI elements | jsDelivr |
+| Font Awesome | 6.x | Icons for cart, wishlist, social | cdnjs |
+| AOS | 2.3.x | Scroll-triggered animations | unpkg |
+| Animate.css | 4.x | CSS entrance animations | cdnjs |
+| SweetAlert2 | 11.x | Beautiful alert/confirm dialogs | cdnjs |
+| Google Fonts | — | Playfair Display, Poppins fonts | fonts.googleapis.com |
+
+## CDN Tags in index.html
+
+The following `<link>` and `<script>` tags are placed in `index.html` exactly as shown. CSS links go inside `<head>` and JavaScript bundles go just before the closing `</body>` tag.
+
+```html index.html
+<!-- CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<!-- JS (before </body>) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+```
+
+## Upgrading a Library
+
+To upgrade any library to a newer version, replace the version number in the CDN URL with the version you want, then reload the page in your browser and verify nothing is broken. No build step, compilation, or package manager command is required.
+
+For example, to upgrade Bootstrap from `5.3.0` to `5.3.2`, change:
+
+```html index.html
+<!-- Before -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<!-- After -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+```
+
+Apply the same change to the matching JavaScript `<script>` tag if the library has one.
+
+<Note>
+  Pinning exact versions (e.g., `@5.3.0`) ensures your site doesn't break from unexpected upstream changes. Floating version ranges like `@5` or `@latest` will automatically pull in the newest release, which may introduce breaking changes without warning.
+</Note>
+
+## Using Local Copies Offline
+
+If you need the site to work without an internet connection, you can replace any CDN URL with a locally hosted file.
+
+1. Download the CSS or JS file from the CDN URL in your browser.
+2. Place the file inside your project folder (e.g., `libs/bootstrap.min.css`).
+3. Update the `href` or `src` attribute to the local path.
+
+```html index.html
+<!-- CDN version -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<!-- Local version -->
+<link rel="stylesheet" href="libs/bootstrap.min.css">
+```
+
+<Tip>
+  You can replace any CDN URL with a locally downloaded copy by placing the file in the project folder and updating the `href` or `src` path. This also improves load time in environments where CDN access is slow or blocked.
+</Tip>

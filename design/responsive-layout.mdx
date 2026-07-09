@@ -1,0 +1,68 @@
+---
+title: "Responsive Design and Layout in Book Paradise"
+sidebarTitle: "Responsive Layout"
+description: "Book Paradise is fully responsive across mobile, tablet, and desktop using Bootstrap 5's grid system, flexible card layouts, and custom CSS media queries."
+---
+
+Book Paradise is built mobile-first: the base styles target the smallest screens, and progressive enhancements layer on as the viewport grows. Bootstrap 5's grid system handles the major structural breakpoints — the book catalog, navigation, and hero section all reflow gracefully from a single-column phone layout up through a four-column widescreen display — while custom CSS media queries in `style.css` fine-tune details that Bootstrap's utilities do not cover on their own.
+
+## Bootstrap 5 Grid
+
+The book catalog uses Bootstrap's responsive column classes to move from one column on the smallest phones all the way to four columns on large desktops without any custom JavaScript:
+
+```html index.html
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+  <!-- book cards -->
+</div>
+```
+
+Each `row-cols-*` class controls how many equal-width columns fit per row at that breakpoint and above. The `g-4` utility applies consistent gutters between cards at every size.
+
+The navbar uses Bootstrap's built-in responsive collapse behavior: at the `md` breakpoint and above, all navigation links are visible inline; below `md` they are hidden behind a hamburger toggle button that expands into a full-width dropdown menu.
+
+## Breakpoints
+
+| Breakpoint | Width | Book columns | Nav |
+|---|---|---|---|
+| xs (mobile) | < 576px | 1 | Hamburger menu |
+| sm | ≥ 576px | 2 | Hamburger menu |
+| md | ≥ 768px | 3 | Full nav links |
+| lg | ≥ 992px | 4 | Full nav links |
+| xl | ≥ 1200px | 4 | Full nav links |
+
+<Note>
+  Bootstrap 5 uses a mobile-first approach, so all base styles target mobile and breakpoint prefixes (`sm:`, `md:`, `lg:`, `xl:`) add or override styles for larger screens. When you write a custom rule without a media query, it applies to every screen size including mobile.
+</Note>
+
+## Cart Sidebar
+
+The cart sidebar adapts its presentation to screen size to avoid obstructing the page content on small devices:
+
+- **Mobile:** The sidebar overlays the entire screen at `width: 100vw` with a prominent close button, so the shopper can review their cart without a cramped panel competing with the page behind it.
+- **Desktop:** The sidebar slides in from the right edge as a fixed `380px`-wide panel, leaving the rest of the page partially visible and accessible.
+
+The transition between these two states is handled by a CSS width rule inside a media query — no JavaScript layout logic is required.
+
+## Hero Section
+
+The hero section stacks its content vertically on mobile — headline, subtitle, and CTA buttons appear one above the other in a single column — and switches to a side-by-side two-column layout on desktop, with the text block on the left and the floating book illustrations on the right. Bootstrap's `d-flex flex-column flex-md-row` utility classes drive this switch at the `md` breakpoint.
+
+## Custom Media Queries
+
+Beyond Bootstrap's built-in breakpoints, `style.css` includes targeted media queries to handle design details that require fine-grained control:
+
+```css style.css
+@media (max-width: 768px) {
+  .hero-title  { font-size: 2.2rem; }
+  .cart-sidebar { width: 100%; }
+  .floating-book { display: none; } /* hide decorative elements on small screens */
+}
+```
+
+- **`hero-title` font size** is scaled down so the headline fits comfortably without wrapping awkwardly across three or more lines on a small phone.
+- **`cart-sidebar` width** is set to `100%` to produce the full-screen overlay behavior described above.
+- **`floating-book`** decorative illustrations are hidden on small screens to eliminate visual clutter and reduce layout complexity on constrained viewports.
+
+<Tip>
+  The fastest way to check how Book Paradise looks at any screen width is Chrome DevTools' device toolbar. Open DevTools with **F12**, then press **Ctrl+Shift+M** (Windows/Linux) or **Cmd+Shift+M** (macOS) to toggle the responsive viewport. You can drag the handles to any width, or pick a named device preset from the dropdown to simulate specific phones and tablets.
+</Tip>

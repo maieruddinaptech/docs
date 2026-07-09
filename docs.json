@@ -1,72 +1,73 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "name": "Book Paradise",
+  "theme": "willow",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#ef7025",
+    "light": "#eec9bc",
+    "dark": "#4fa1ab"
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "pages": [
+    "tabs": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
+        "tab": "Guide",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "project-structure"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/hero-home",
+              "features/book-catalog",
+              "features/shopping-cart",
+              "features/wishlist",
+              "features/search-filters"
+            ]
+          },
+          {
+            "group": "UI & Design",
+            "pages": [
+              "design/theme-colors",
+              "design/typography",
+              "design/animations",
+              "design/responsive-layout"
+            ]
+          },
+          {
+            "group": "Customization",
+            "pages": [
+              "customization/adding-books",
+              "customization/styling",
+              "customization/localstorage"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/dependencies",
+              "reference/seo",
+              "reference/faq"
+            ]
+          }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
     ]
   },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Open Bookstore",
+      "href": "https://bookparadise.example.com"
     }
+  },
+  "footer": {
+    "socials": {}
   }
 }

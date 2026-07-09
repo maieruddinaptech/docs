@@ -1,0 +1,113 @@
+---
+title: "Understanding Book Paradise LocalStorage Data"
+sidebarTitle: "LocalStorage"
+description: "Book Paradise stores cart and wishlist data in your browser's localStorage, enabling persistence across page refreshes without any server or database."
+---
+
+Book Paradise has no backend, no database, and no login system — and it doesn't need one for the shopping experience to feel seamless. Instead, it uses your browser's built-in `localStorage` API to persist cart and wishlist data directly on your device. This means your selections survive a page refresh or a browser restart without any server round-trip, and nothing is ever transmitted to an external service. Understanding how this data is structured helps you debug edge cases, build on top of the existing logic, or safely clear state during testing.
+
+## Storage Keys
+
+Book Paradise writes to two `localStorage` keys:
+
+| Key | Type | Description |
+|---|---|---|
+| `bp_cart` | JSON array | Cart items with id, title, price, and quantity |
+| `bp_wishlist` | JSON array | Wishlisted book IDs |
+
+Both keys are set and read exclusively by `script.js`. If either key is absent (for example, on a first visit or after clearing site data), the application treats it as an empty array.
+
+## Cart Data Structure
+
+The `bp_cart` key stores a JSON-serialised array of objects. Each object represents a distinct book in the cart along with the quantity the user has added:
+
+```js
+// localStorage.getItem('bp_cart') returns:
+[
+  { "id": 1, "title": "The Midnight Library", "price": 14.99, "quantity": 2 },
+  { "id": 5, "title": "Atomic Habits",        "price": 12.99, "quantity": 1 }
+]
+```
+
+Each cart item object contains:
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | Integer | Matches the `id` field of the source book object in `script.js` |
+| `title` | String | Book title, copied from the `books` array at the time of adding |
+| `price` | Number | Unit price at the time of adding |
+| `quantity` | Integer | Number of copies in the cart; increments when the user adds the same book again |
+
+## Wishlist Data Structure
+
+The `bp_wishlist` key stores a leaner structure — just an array of book `id` integers. Full book details are always looked up live from the `books` array, so the wishlist never goes stale if you update a title or price:
+
+```js
+// localStorage.getItem('bp_wishlist') returns:
+[1, 7, 12]  // Array of book IDs
+```
+
+## Reading and Writing from JavaScript
+
+`script.js` wraps all `localStorage` interactions in small helper functions to keep the serialisation logic in one place. Here is how the cart is saved and loaded:
+
+```js script.js
+// Save cart to localStorage
+function saveCart(cart) {
+  localStorage.setItem('bp_cart', JSON.stringify(cart));
+}
+
+// Load cart from localStorage
+function loadCart() {
+  return JSON.parse(localStorage.getItem('bp_cart') || '[]');
+}
+```
+
+The `|| '[]'` fallback in `loadCart` ensures that `JSON.parse` always receives a valid string, even on a user's very first visit when `bp_cart` doesn't exist yet. The same pattern applies to the wishlist using the `bp_wishlist` key.
+
+If you want to extend Book Paradise with new persistent state (for example, a "saved for later" list), follow the same pattern: write a `saveFoo` / `loadFoo` pair, pick a unique key prefixed with `bp_`, and store a JSON-serialised value.
+
+## Clearing Data
+
+There are three ways to clear Book Paradise's stored data:
+
+<Steps>
+  <Step title="Complete the checkout flow">
+    When a user completes checkout through the site's built-in flow, `script.js` automatically calls `localStorage.removeItem('bp_cart')`, clearing the cart. The wishlist is intentionally left intact so users can re-add favourites on their next visit.
+  </Step>
+  <Step title="Use browser DevTools">
+    Open DevTools (`F12` or right-click → Inspect), navigate to the **Application** tab, expand **Local Storage** in the left panel, select your site's origin, find the `bp_cart` or `bp_wishlist` row, and press the **Delete** key (or right-click → Delete). This is the fastest approach during development and testing.
+  </Step>
+  <Step title="Run JavaScript in the console">
+    You can remove individual keys from the DevTools console or from your own code:
+
+    ```js
+    // Remove only the cart
+    localStorage.removeItem('bp_cart');
+
+    // Remove only the wishlist
+    localStorage.removeItem('bp_wishlist');
+
+    // Remove everything stored by the page
+    localStorage.clear();
+    ```
+
+    Use `localStorage.clear()` with caution — it erases all keys for the current origin, not just the Book Paradise ones.
+  </Step>
+</Steps>
+
+## Limitations
+
+Keep the following constraints in mind as you work with `localStorage`:
+
+- **Browser-specific** — data is stored on the device and browser where it was created. A user who adds books to their cart on their phone will not see that cart when they visit on their laptop.
+- **Storage limit** — browsers enforce a per-origin limit of approximately **5 MB**. A typical Book Paradise cart with dozens of items uses only a few kilobytes, so you are extremely unlikely to hit this ceiling.
+- **Cleared with site data** — users who clear their browser's cookies and site data, use private/incognito mode, or enable aggressive privacy settings will start with an empty cart and wishlist on each visit.
+
+<Warning>
+  `localStorage` data is stored in plain text and is accessible to any JavaScript running on the same origin. **Do not store sensitive information** — such as passwords, payment card numbers, or personally identifiable information — in `localStorage`. Book Paradise never does this by design.
+</Warning>
+
+<Note>
+  Book Paradise never stores personal information in `localStorage`. The only data written to `bp_cart` and `bp_wishlist` are book IDs, titles, prices, and quantities — none of which can identify an individual user.
+</Note>

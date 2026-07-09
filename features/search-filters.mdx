@@ -1,0 +1,85 @@
+---
+title: "Searching and Filtering Books in Book Paradise"
+sidebarTitle: "Search & Filters"
+description: "Book Paradise provides real-time search by title or author, category filter buttons, and multi-criterion sorting to help you find the right book instantly."
+---
+
+Finding the right book in Book Paradise is designed to be effortless. The Products section puts a live search input, a row of category filter buttons, and a sort dropdown at the top of the catalog so you can narrow down all 24 titles in seconds. All three controls work together — you can type a search query, activate a category filter, and choose a sort order simultaneously, and the catalog grid will update in real time to show only the books that match every criterion you have set.
+
+## Search
+
+The **search input** at the top of the Products section filters the visible book cards as you type — there is no submit button and no delay. The search is performed against each book's `title` and `author` fields and is fully case-insensitive, so typing `"haig"`, `"Haig"`, or `"HAIG"` will all surface *The Midnight Library* by Matt Haig.
+
+<Steps>
+  <Step title="Click the search bar">
+    Click inside the search input field above the book grid. It is labeled with a magnifying-glass icon placeholder.
+  </Step>
+  <Step title="Start typing">
+    Begin typing any part of a book title or an author's name. The catalog grid re-renders after every keystroke, showing only the books whose title or author contains your query.
+  </Step>
+  <Step title="Clear the search">
+    Delete all text from the input field (or click the × clear button if present) to return to the full unfiltered catalog, respecting any category filter or sort order you have active.
+  </Step>
+</Steps>
+
+## Category Filters
+
+A horizontal row of pill-shaped filter buttons sits beneath the search bar. Each button corresponds to one of the eight genres used in the catalog:
+
+<CardGroup cols={4}>
+  <Card title="All" icon="layer-group">Resets the category filter and shows all 24 books.</Card>
+  <Card title="Fiction" icon="book">Shows literary and contemporary fiction titles.</Card>
+  <Card title="Non-Fiction" icon="newspaper">Shows narrative non-fiction and essays.</Card>
+  <Card title="Mystery" icon="magnifying-glass">Shows crime, thriller, and detective stories.</Card>
+  <Card title="Fantasy" icon="wand-magic-sparkles">Shows epic and urban fantasy titles.</Card>
+  <Card title="Sci-Fi" icon="rocket">Shows science fiction and speculative fiction.</Card>
+  <Card title="Biography" icon="user">Shows memoirs and biographical accounts.</Card>
+  <Card title="Self-Help" icon="brain">Shows personal development and productivity books.</Card>
+</CardGroup>
+
+Clicking a category button activates it (the button gains an active/highlighted style) and immediately re-renders the grid to show only books with a matching `category` value. Clicking the active button again, or clicking **All**, deactivates the filter.
+
+<Tip>
+  The **All** filter button is selected by default when the page loads and always shows the complete catalog of all 24 books. It is the fastest way to reset a category filter without refreshing the page.
+</Tip>
+
+## Sorting
+
+The **sort dropdown** to the right of the filter buttons lets you reorder the currently visible books by five criteria:
+
+| Option             | Behaviour                                                       |
+|--------------------|-----------------------------------------------------------------|
+| Price: Low to High | Ascending sort by `price` — cheapest books appear first.       |
+| Price: High to Low | Descending sort by `price` — most expensive books appear first. |
+| Rating: High to Low| Descending sort by `rating` — highest-rated books appear first. |
+| Title: A–Z         | Ascending alphabetical sort by `title`.                         |
+| Title: Z–A         | Descending alphabetical sort by `title`.                        |
+
+Selecting a sort option re-renders the catalog immediately. The sort is applied to the already-filtered result set, so it always respects any active search query or category filter.
+
+## Combining Filters
+
+Search, category filtering, and sorting are designed to stack. For example, you can type `"the"` in the search bar, click the **Fantasy** category button, and choose **Rating: High to Low** from the sort dropdown — the grid will show only fantasy books whose title or author contains "the", ordered from best to worst rated. All three controls read from the same reactive state variables (`searchQuery`, `activeCategory`, and `sortCriterion`) and feed into a single `renderBooks()` call.
+
+## How the Filtering Logic Works
+
+The three controls all funnel into a single `renderBooks()` function in `script.js`. Each time any control changes its state variable, `renderBooks()` is called, which chains a filter and a sort over the master `books` array before handing the result to `displayBooks()`:
+
+```js script.js (filtering logic)
+function renderBooks() {
+  let filtered = books
+    .filter(b => b.title.toLowerCase().includes(searchQuery) ||
+                 b.author.toLowerCase().includes(searchQuery))
+    .filter(b => activeCategory === 'all' || b.category === activeCategory);
+
+  if (sortCriterion === 'price-asc')  filtered.sort((a,b) => a.price - b.price);
+  if (sortCriterion === 'price-desc') filtered.sort((a,b) => b.price - a.price);
+  if (sortCriterion === 'rating')     filtered.sort((a,b) => b.rating - a.rating);
+  if (sortCriterion === 'title-asc')  filtered.sort((a,b) => a.title.localeCompare(b.title));
+  if (sortCriterion === 'title-desc') filtered.sort((a,b) => b.title.localeCompare(a.title));
+
+  displayBooks(filtered);
+}
+```
+
+Because `renderBooks()` always starts from the full `books` array and re-applies all active criteria on every call, the filters are stateless and composable — changing one control never corrupts the state of the others.
